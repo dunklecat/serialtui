@@ -9,7 +9,6 @@ repository = "https://github.com/dunklecat/serialtui"
 license-file = "LICENSE"
 keywords = ["serial", "tui"]
 categories = ["command-line-interface"]
-exclude = ["/target"]
 
 [dependencies]
 rustyline = "14"
