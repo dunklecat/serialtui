@@ -3,7 +3,11 @@ use rustyline::Context;
 use rustyline_derive::{Completer, Helper, Highlighter, Validator};
 
 use crate::{
-    command::{command_manager::{CommandManager, CommandManagerBuilder}, Command}, hint::default_hint::DefaultHint
+    command::{
+        command_manager::{CommandManager, CommandManagerBuilder},
+        Command,
+    },
+    hint::default_hint::DefaultHint,
 };
 
 #[derive(Default, Completer, Helper, Highlighter, Validator)]
@@ -48,7 +52,8 @@ impl Hinter for DefaultTerminal {
             Option::None
         } else {
             let command = tokens.remove(0);
-            self.command_manager.get_command_args_hint(command, &tokens, pos)
+            self.command_manager
+                .get_command_args_hint(command, &tokens, pos)
         }
     }
 }
@@ -59,12 +64,6 @@ pub struct DefaultTerminalBuilder {
 }
 
 impl DefaultTerminalBuilder {
-    pub fn new() -> DefaultTerminalBuilder {
-        DefaultTerminalBuilder {
-            command_manager: Default::default(),
-        }
-    }
-
     pub fn commands(mut self, commands: Vec<Box<dyn Command>>) -> DefaultTerminalBuilder {
         let cm_builder = CommandManagerBuilder::new();
         self.command_manager = cm_builder.commands(commands).build();

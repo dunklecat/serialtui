@@ -11,11 +11,11 @@ pub struct PreparedProtocol {
     pub stop_bits: serialport::StopBits,
 }
 
-impl PreparedProtocol {
-    pub fn builder() -> PreparedProtocolBuilder {
-        PreparedProtocolBuilder::create_empty()
-    }
-}
+// impl PreparedProtocol {
+//     pub fn builder() -> PreparedProtocolBuilder {
+//         PreparedProtocolBuilder::create_empty()
+//     }
+// }
 
 impl PreparedProtocolBuilder {
     pub fn build_from_raw(
