@@ -1,0 +1,29 @@
+[package]
+name = "serialtui"
+version = "0.1.0"
+authors = ["dunklecat"]
+edition = "2021"
+description = "A TUI environment specific to serial connections"
+readme = "README.adoc"
+repository = "https://github.com/dunklecat/serialtui"
+license = "LGPL-2.1-or-later"
+license-file = "LICENSE"
+keywords = ["serial", "tui"]
+categories = ["command-line-interface"]
+exclude = ["/target"]
+
+[dependencies]
+rustyline = "14"
+async-trait = "0"
+rustyline-derive = "0"
+xdg = "2"
+log = "0"
+derive_builder = "0"
+serialport = "4.2.2"
+tokio = { version = "1.34.0", features = ["full"] }
+tokio-serial = "5.4.4"
+lazy_static = "1.4.0"
+serde = { version = "1", features = ["derive"] }
+serde-enum-str = "0.3"
+enum-iterator = "1.5.0"
+toml = "0.8.19"
