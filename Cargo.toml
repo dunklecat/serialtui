@@ -4,9 +4,8 @@ version = "0.1.0"
 authors = ["dunklecat"]
 edition = "2021"
 description = "A TUI environment specific to serial connections"
-readme = "README.adoc"
 repository = "https://github.com/dunklecat/serialtui"
-license-file = "LICENSE"
+license = "LGPL-2.1-or-later"
 keywords = ["serial", "tui"]
 categories = ["command-line-interface"]
 
