@@ -1,16 +1,14 @@
 pub(crate) mod command_manager;
 
-use crate::hint::default_hint::DefaultHint;
 use async_trait::async_trait;
 
 #[async_trait]
 pub trait Command {
-    fn get_command(&self) -> &'static str;
-
-    fn hint(&self, tokens: &Vec<&str>, pos: usize) -> Option<DefaultHint>;
+    fn get_name(&self) -> &'static str;
+    fn get_args(&self) -> Vec<&'static str>;
 
     fn validate(&self, tokens: &Vec<&str>) -> bool {
-        tokens.len() == 1 && tokens.last().unwrap() == &self.get_command()
+        tokens.len() == 1 && tokens.last().unwrap() == &self.get_name()
     }
 
     async fn run(&self, args: Vec<String>) -> Vec<u8>;

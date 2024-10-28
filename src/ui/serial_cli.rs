@@ -1,20 +1,20 @@
 use rustyline::{error::ReadlineError, history::DefaultHistory, Editor};
 
-use crate::{command::Command, terminal::default_terminal::DefaultTerminal};
+use crate::{command::command_manager::CommandManager, command::Command};
 
-pub struct Shell {
-    terminal: DefaultTerminal,
+pub struct SerialCli {
+    command_manager: CommandManager,
     // rl: rustyline::Editor<&'a DefaultTerminal, DefaultHistory>,
 }
 
-impl Shell {
-    pub fn builder() -> ShellBuilder {
-        ShellBuilder::default()
+impl SerialCli {
+    pub fn builder() -> SerialCliBuilder {
+        SerialCliBuilder::default()
     }
 
     pub async fn start(&self) {
-        let mut rl: Editor<&DefaultTerminal, rustyline::history::FileHistory> =
-            rustyline::Editor::<&DefaultTerminal, DefaultHistory>::new().unwrap();
+        let mut rl: Editor<&CommandManager, rustyline::history::FileHistory> =
+            rustyline::Editor::<&CommandManager, DefaultHistory>::new().unwrap();
 
         let history_path = self.start_history_log(&mut rl);
 
@@ -27,7 +27,7 @@ impl Shell {
                         Err(_) => log::warn!("Cannot add command entry to history"),
                     }
 
-                    let output = self.terminal.run_command(line).await;
+                    let output = self.command_manager.run_command(line).await;
                     print!("\t{}", String::from_utf8(output).unwrap());
                 }
                 Err(ReadlineError::Interrupted) => {
@@ -50,7 +50,7 @@ impl Shell {
 
     fn start_history_log<'a>(
         &'a self,
-        rl: &mut Editor<&'a DefaultTerminal, rustyline::history::FileHistory>,
+        rl: &mut Editor<&'a CommandManager, rustyline::history::FileHistory>,
     ) -> std::path::PathBuf {
         let xdg_dirs = xdg::BaseDirectories::with_prefix("wswitch_interface")
             .expect("Cannot access XDG environment");
@@ -67,37 +67,37 @@ impl Shell {
         );
 
         let _ = rl.load_history(&history_path);
-        let _ = rl.set_helper(Some(&self.terminal));
+        let _ = rl.set_helper(Some(&self.command_manager));
 
         history_path
     }
 }
 
 #[derive(Default)]
-pub struct ShellBuilder {
+pub struct SerialCliBuilder {
     commands: Vec<Box<dyn Command>>,
-    terminal: DefaultTerminal,
+    command_manager: CommandManager,
     // history_path: String,
 }
 
-impl ShellBuilder {
-    pub fn new() -> ShellBuilder {
-        ShellBuilder {
+impl SerialCliBuilder {
+    pub fn new() -> SerialCliBuilder {
+        SerialCliBuilder {
             commands: Default::default(),
-            terminal: Default::default(),
+            command_manager: Default::default(),
         }
     }
 
-    pub fn commands(mut self, commands: Vec<Box<dyn Command>>) -> ShellBuilder {
+    pub fn commands(mut self, commands: Vec<Box<dyn Command>>) -> SerialCliBuilder {
         self.commands = commands;
         self
     }
 
-    pub fn build(mut self) -> Shell {
-        self.terminal = DefaultTerminal::builder().commands(self.commands).build();
+    pub fn build(mut self) -> SerialCli {
+        self.command_manager = CommandManager::builder().commands(self.commands).build();
 
-        Shell {
-            terminal: self.terminal,
+        SerialCli {
+            command_manager: self.command_manager,
         }
     }
 }
